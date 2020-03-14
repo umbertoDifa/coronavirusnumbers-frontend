@@ -108,8 +108,7 @@ class MyApp extends StatelessWidget {
         textTheme: TextTheme(
           headline5: TextStyle(
               fontSize: 36.0, fontWeight: FontWeight.bold, color: Colors.white),
-          headline6: TextStyle(
-              fontSize: 27.0, fontStyle: FontStyle.italic, color: Colors.grey),
+          headline6: TextStyle(fontSize: 17.0, color: Colors.grey),
           bodyText2: TextStyle(fontSize: 36.0, color: Colors.grey),
         ),
       ),
@@ -165,23 +164,32 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Row _build_filter_icons_row(BuildContext context) {
+
+    Column _build_filter_icon(BuildContext context, String subtitle) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          Icon(
+            MyCustomIcons.recovered,
+            color: Theme.of(context).iconTheme.color,
+            size: Theme.of(context).iconTheme.size,
+          ),
+          Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Text(
+                subtitle,
+                style: Theme.of(context).textTheme.headline6,
+              )),
+        ],
+      );
+    }
     return new Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
-        Icon(
-          MyCustomIcons.recovered,
-          color: Theme.of(context).iconTheme.color,
-          size: Theme.of(context).iconTheme.size,
-
-        ), Icon(
-          MyCustomIcons.recovered,
-          color: Theme.of(context).iconTheme.color,
-          size: Theme.of(context).iconTheme.size,
-        ), Icon(
-          MyCustomIcons.recovered,
-          color: Theme.of(context).iconTheme.color,
-          size: Theme.of(context).iconTheme.size,
-        ),
+        _build_filter_icon(context, "CASES"),
+        _build_filter_icon(context, "DEATHS"),
+        _build_filter_icon(context, "RECOVERED"),
       ],
     );
   }
@@ -190,27 +198,25 @@ class _MyHomePageState extends State<MyHomePage> {
     Expanded _build_top_icons(BuildContext context) {
       return new Expanded(
           child: new ListTile(
-            leading: Icon(
-              Icons.menu,
-              color: Theme.of(context).iconTheme.color,
-              size: Theme.of(context).iconTheme.size,
-            ),
-            trailing: Icon(
-              Icons.share,
-              color: Theme.of(context).iconTheme.color,
-              size: Theme.of(context).iconTheme.size,
-            ),
-          ));
+        leading: Icon(
+          Icons.menu,
+          color: Theme.of(context).iconTheme.color,
+          size: Theme.of(context).iconTheme.size,
+        ),
+        trailing: Icon(
+          Icons.share,
+          color: Theme.of(context).iconTheme.color,
+          size: Theme.of(context).iconTheme.size,
+        ),
+      ));
     }
-    
+
     return new Row(
-                children: <Widget>[
-                  _build_top_icons(context),
-                ],
-              );
+      children: <Widget>[
+        _build_top_icons(context),
+      ],
+    );
   }
-
-
 
   Row _build_top_name_row(BuildContext context) {
     return new Row(
@@ -238,7 +244,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       );
     }
-    
+
     return new Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
@@ -248,8 +254,6 @@ class _MyHomePageState extends State<MyHomePage> {
       ],
     );
   }
-
-
 
   @override
   Widget build(BuildContext context) {
