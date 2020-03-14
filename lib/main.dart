@@ -148,7 +148,7 @@ class _MyHomePageState extends State<MyHomePage> {
               children: <Widget>[
                 _build_top_icons_row(context),
                 _build_top_name_row(context),
-                _build_top_numbers_row(),
+                _build_top_numbers_row(snapshot),
                 _build_filter_icons_row(context),
                 _build_bottom_list(context, snapshot),
                 _build_last_update_row(),
@@ -166,41 +166,47 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Padding _build_last_update_row() {
-    return new Padding(padding: EdgeInsets.all(5.0),
+    return new Padding(
+        padding: EdgeInsets.fromLTRB(0, 10.0, 0, 8.0),
         child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  new Text("Last update: 10 March 2020 12:23PM",
-                    style: TextStyle(fontSize: 13.0, color: Colors.grey,),
-                  ),
-                ],
-              ));
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            new Text(
+              "Last update: 10 March 2020 12:23PM",
+              style: TextStyle(
+                fontSize: 13.0,
+                color: Colors.grey,
+              ),
+            ),
+          ],
+        ));
   }
 
   Expanded _build_bottom_list(
       BuildContext context, AsyncSnapshot<List<CoronaData>> snapshot) {
-    return new Expanded(child:new ListView.builder(
-        scrollDirection: Axis.vertical,
-        shrinkWrap: true,
-        padding: const EdgeInsets.all(16.0),
-        itemCount: snapshot.data.length,
-        itemBuilder: (context, i) {
-          return ListTile(
-            leading: _build_themed_icon(Icons.star),
-            title: Center(
-              child: new Text(
-                snapshot.data[i].name.toUpperCase() +
-                    '  ' +
-                    snapshot.data[i].confirmed.toString() +
-                    ' , ' +
-                    snapshot.data[i].deaths.toString(),
-                style: Theme.of(context).textTheme.headline6,
-              ),
+    return new Expanded(
+        child: new ListView.builder(
+      scrollDirection: Axis.vertical,
+      shrinkWrap: true,
+      padding: const EdgeInsets.all(16.0),
+      itemCount: snapshot.data.length,
+      itemBuilder: (context, i) {
+        return ListTile(
+          leading: _build_themed_icon(Icons.star),
+          title: Center(
+            child: new Text(
+              snapshot.data[i].name.toUpperCase() +
+                  '  ' +
+                  snapshot.data[i].confirmed.toString() +
+                  ' , ' +
+                  snapshot.data[i].deaths.toString(),
+              style: Theme.of(context).textTheme.headline6,
             ),
-            trailing: _build_themed_icon(Icons.notifications),
-          );
-        },
-      ));
+          ),
+          trailing: _build_themed_icon(Icons.notifications),
+        );
+      },
+    ));
   }
 
   Row _build_filter_icons_row(BuildContext context) {
@@ -234,8 +240,8 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Icon _build_themed_icon(IconData icon){
-    return  Icon(
+  Icon _build_themed_icon(IconData icon) {
+    return Icon(
       icon,
       color: Theme.of(context).iconTheme.color,
       size: Theme.of(context).iconTheme.size,
@@ -272,12 +278,12 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Row _build_top_numbers_row() {
-    Column _build_top_number(Color text_color) {
+  Row _build_top_numbers_row(AsyncSnapshot<List<CoronaData>> snapshot) {
+    Column _build_top_number(Color text_color, int number) {
       return new Column(
         children: <Widget>[
           new Text(
-            "1000",
+            number.toString(),
             style: TextStyle(
                 fontSize: 36.0, fontWeight: FontWeight.bold, color: text_color),
           )
@@ -285,12 +291,24 @@ class _MyHomePageState extends State<MyHomePage> {
       );
     }
 
+    var totalConfirmed = snapshot.data
+        .map((e) => e.confirmed)
+        .reduce((value, element) => value + element);
+
+    var totalDeaths = snapshot.data
+        .map((e) => e.deaths)
+        .reduce((value, element) => value + element);
+
+    var totalRecovered = snapshot.data
+        .map((e) => e.recovered)
+        .reduce((value, element) => value + element);
+
     return new Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
-        _build_top_number(DEATHS_COLOR),
-        _build_top_number(CASES_COLOR),
-        _build_top_number(RECOVERED_COLOR),
+        _build_top_number(CASES_COLOR, totalConfirmed),
+        _build_top_number(DEATHS_COLOR, totalDeaths),
+        _build_top_number(RECOVERED_COLOR, totalRecovered),
       ],
     );
   }
