@@ -150,6 +150,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 _build_top_name_row(context),
                 _build_top_numbers_row(),
                 _build_filter_icons_row(context),
+                _build_bottom_list(context, snapshot),
+                _build_last_update_row(),
               ],
             ),
           );
@@ -163,8 +165,45 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Row _build_filter_icons_row(BuildContext context) {
+  Padding _build_last_update_row() {
+    return new Padding(padding: EdgeInsets.all(5.0),
+        child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  new Text("Last update: 10 March 2020 12:23PM",
+                    style: TextStyle(fontSize: 13.0, color: Colors.grey,),
+                  ),
+                ],
+              ));
+  }
 
+  Expanded _build_bottom_list(
+      BuildContext context, AsyncSnapshot<List<CoronaData>> snapshot) {
+    return new Expanded(child:new ListView.builder(
+        scrollDirection: Axis.vertical,
+        shrinkWrap: true,
+        padding: const EdgeInsets.all(16.0),
+        itemCount: snapshot.data.length,
+        itemBuilder: (context, i) {
+          return ListTile(
+            leading: _build_themed_icon(Icons.star),
+            title: Center(
+              child: new Text(
+                snapshot.data[i].name.toUpperCase() +
+                    '  ' +
+                    snapshot.data[i].confirmed.toString() +
+                    ' , ' +
+                    snapshot.data[i].deaths.toString(),
+                style: Theme.of(context).textTheme.headline6,
+              ),
+            ),
+            trailing: _build_themed_icon(Icons.notifications),
+          );
+        },
+      ));
+  }
+
+  Row _build_filter_icons_row(BuildContext context) {
     Column _build_filter_icon(BuildContext context, String subtitle) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -183,6 +222,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       );
     }
+
     return new Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -194,20 +234,20 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  Icon _build_themed_icon(IconData icon){
+    return  Icon(
+      icon,
+      color: Theme.of(context).iconTheme.color,
+      size: Theme.of(context).iconTheme.size,
+    );
+  }
+
   Row _build_top_icons_row(BuildContext context) {
     Expanded _build_top_icons(BuildContext context) {
       return new Expanded(
           child: new ListTile(
-        leading: Icon(
-          Icons.menu,
-          color: Theme.of(context).iconTheme.color,
-          size: Theme.of(context).iconTheme.size,
-        ),
-        trailing: Icon(
-          Icons.share,
-          color: Theme.of(context).iconTheme.color,
-          size: Theme.of(context).iconTheme.size,
-        ),
+        leading: _build_themed_icon(Icons.menu),
+        trailing: _build_themed_icon(Icons.share),
       ));
     }
 
