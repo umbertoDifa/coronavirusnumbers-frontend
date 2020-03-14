@@ -15,7 +15,7 @@ Future<List<CoronaData>> fetchAlbum() async {
     var body = json.decode(response.body);
     var countries = body['countries'];
 
-    List<CoronaData> corona_data_list =[];
+    List<CoronaData> corona_data_list = [];
 //    if (countries == null ) {
 ////      return corona_data_list;
 //        body = json.decode(mock_data);
@@ -40,20 +40,23 @@ class CoronaData {
   final int deaths;
   final int recovered;
 
-  CoronaData({this.name, this.last_update,
+  CoronaData(
+      {this.name,
+      this.last_update,
 //    this.lat, this.lng,
-    this.confirmed, this.deaths, this.recovered});
+      this.confirmed,
+      this.deaths,
+      this.recovered});
 
   factory CoronaData.fromJson(Map<String, dynamic> json) {
     return CoronaData(
-      name: json['name'],
-      last_update: json['updatedAt'],
+        name: json['name'],
+        last_update: json['updatedAt'],
 //      lat: json['features'][0]['attributes']['Lat'],
 //      lng: json['features'][0]['attributes']['Long_'],
-      confirmed: json['confirmed'],
-      deaths: json['deaths'],
-      recovered: json['recovered']
-    );
+        confirmed: json['confirmed'],
+        deaths: json['deaths'],
+        recovered: json['recovered']);
   }
 }
 
@@ -71,16 +74,17 @@ class MyApp extends StatelessWidget {
         primaryColor: Colors.deepPurple,
         accentColor: Colors.grey,
         fontFamily: "Century Gothic",
-        iconTheme: IconThemeData (
+        iconTheme: IconThemeData(
           color: Colors.grey,
           size: 36.0,
         ),
         textTheme: TextTheme(
-          headline5: TextStyle(fontSize: 53.0, fontWeight: FontWeight.bold, color:  Colors.grey),
-          headline6: TextStyle(fontSize: 27.0, fontStyle: FontStyle.italic, color:  Colors.grey),
-          bodyText2: TextStyle(fontSize: 36.0, color:  Colors.grey),
+          headline5: TextStyle(
+              fontSize: 36.0, fontWeight: FontWeight.bold, color: Colors.white),
+          headline6: TextStyle(
+              fontSize: 27.0, fontStyle: FontStyle.italic, color: Colors.grey),
+          bodyText2: TextStyle(fontSize: 36.0, color: Colors.grey),
         ),
-
       ),
       home: MyHomePage(title: 'Corona Virus Numbers'),
     );
@@ -95,7 +99,6 @@ class MyHomePage extends StatefulWidget {
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
-
 
 class _MyHomePageState extends State<MyHomePage> {
   Future<List<CoronaData>> futureCoronaData;
@@ -112,12 +115,11 @@ class _MyHomePageState extends State<MyHomePage> {
     return Container(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-
-        ],
+        children: [],
       ),
     );
   }
+
 //  Widget _corona_data() {
 //    return FutureBuilder<List<CoronaData>>(
 //      future: futureCoronaData,
@@ -155,21 +157,43 @@ class _MyHomePageState extends State<MyHomePage> {
             color: Theme.of(context).primaryColor,
             child: Column(
               children: <Widget>[
-                new Row(children: <Widget>[
-                  new Expanded(child: new ListTile(
-                      leading: Icon(Icons.menu, color: Theme.of(context).iconTheme.color, size: Theme.of(context).iconTheme.size,),
-                      trailing: Icon(Icons.share, color: Theme.of(context).iconTheme.color, size: Theme.of(context).iconTheme.size,),
-                      title:Center(child: new Text(
-
-                        "center title",
-                        //                      snapshot.data[i].name +'  ' + snapshot.data[i].confirmed.toString() + ' , ' + snapshot.data[i].deaths.toString(),
-                        style:Theme.of(context).textTheme.bodyText2,
-                      ))))
-
-
-                ],),
-                new Row(children: <Widget>[new Text("testo2")],),
-                new Row(children: <Widget>[new Text("testo3")],),
+                new Row(
+                  children: <Widget>[
+                    new Expanded(
+                        child: new ListTile(
+                            leading: Icon(
+                              Icons.menu,
+                              color: Theme.of(context).iconTheme.color,
+                              size: Theme.of(context).iconTheme.size,
+                            ),
+                            trailing: Icon(
+                              Icons.share,
+                              color: Theme.of(context).iconTheme.color,
+                              size: Theme.of(context).iconTheme.size,
+                            ),
+//                            title: Center(
+//                                child: new Text(
+//                              "center title",
+//                              //                      snapshot.data[i].name +'  ' + snapshot.data[i].confirmed.toString() + ' , ' + snapshot.data[i].deaths.toString(),
+//                              style: Theme.of(context).textTheme.bodyText2,
+//                            ))
+                        ))
+                  ],
+                ),
+                new Row(
+                  children: <Widget>[
+                    new Expanded(
+                        child: new Container(
+                          padding:EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                            child: new Text(
+                      "WORLDWIDE",
+                      style: Theme.of(context).textTheme.headline5,
+                    )))
+                  ],
+                ),
+                new Row(
+                  children: <Widget>[new Text("testo3")],
+                ),
               ],
             ),
           );
@@ -182,26 +206,11 @@ class _MyHomePageState extends State<MyHomePage> {
       },
     );
   }
+
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
-//      appBar: AppBar(
-//        // Here we take the value from the MyHomePage object that was created by
-//        // the App.build method, and use it to set our appbar title.
-//        title: Text(widget.title),
-//      ),
-      body:_corona_data(),//_buildSuggestions(),
-//      floatingActionButton: FloatingActionButton(
-//        onPressed: _incrementCounter,
-//        tooltip: 'Increment',
-//        child: Icon(Icons.add),
-//      ), // This trailing comma makes auto-formatting nicer for build methods.
+      body: _corona_data(),
     );
   }
 
