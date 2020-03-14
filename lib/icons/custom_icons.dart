@@ -21,4 +21,6 @@ class MyCustomIcons {
   static const _kFontFam = 'MyFlutterApp';
 
   static const IconData recovered = IconData(0xe800, fontFamily: _kFontFam);
+  static const IconData deaths = IconData(0xe801, fontFamily: _kFontFam);
+  static const IconData cases = IconData(0xe802, fontFamily: _kFontFam);
 }
