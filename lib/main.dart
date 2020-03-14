@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:geolocator/geolocator.dart';
@@ -60,6 +61,28 @@ class CoronaData {
   }
 }
 
+var DEATHS_COLOR = Color(0xfff40f4c);
+var RECOVERED_COLOR = Color(0xff55aa50);
+var CASES_COLOR = Color(0xffefae1d);
+const int _purplePrimaryValue = 0xff2a1c66;
+const BACKGROUND_COLOR = Color(_purplePrimaryValue);
+
+const MaterialColor primaryPurple = MaterialColor(
+  _purplePrimaryValue,
+  <int, Color>{
+    50: BACKGROUND_COLOR,
+    100: BACKGROUND_COLOR,
+    200: BACKGROUND_COLOR,
+    300: BACKGROUND_COLOR,
+    400: BACKGROUND_COLOR,
+    500: BACKGROUND_COLOR,
+    600: BACKGROUND_COLOR,
+    700: BACKGROUND_COLOR,
+    800: BACKGROUND_COLOR,
+    900: BACKGROUND_COLOR,
+  },
+);
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -69,9 +92,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
-        backgroundColor: Colors.deepPurple,
-        primaryColor: Colors.deepPurple,
+        primarySwatch: primaryPurple,
+        backgroundColor: primaryPurple,
+        primaryColor: primaryPurple,
         accentColor: Colors.grey,
         fontFamily: "Century Gothic",
         iconTheme: IconThemeData(
@@ -119,36 +142,8 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
-
-//  Widget _corona_data() {
-//    return FutureBuilder<List<CoronaData>>(
-//      future: futureCoronaData,
-//      builder: (context, snapshot) {
-//        if (snapshot.hasData) {
-//          return ListView.builder(
-//              padding: const EdgeInsets.all(16.0),
-//              itemCount: snapshot.data.length,
-//              itemBuilder: (context, i) {
-//                return ListTile(
-//                  leading: Icon(Icons.share),
-//                    title:Center(child: new Text(
-//                      snapshot.data[i].name +'  ' + snapshot.data[i].confirmed.toString() + ' , ' + snapshot.data[i].deaths.toString(),
-//                      style: TextStyle(fontSize: 18.0),
-//                    ),),
-//                  trailing: Icon(Icons.share),
-//                );
-//              },
-//          );
-//        } else if (snapshot.hasError) {
-//          return Text("${snapshot.error}");
-//        }
-//
-//        // By default, show a loading spinner.
-//        return CircularProgressIndicator();
-//      },
-//    );
-//  }
-  Widget _corona_data() {
+  
+  Widget _corona_body() {
     return FutureBuilder<List<CoronaData>>(
       future: futureCoronaData,
       builder: (context, snapshot) {
@@ -161,39 +156,32 @@ class _MyHomePageState extends State<MyHomePage> {
                   children: <Widget>[
                     new Expanded(
                         child: new ListTile(
-                            leading: Icon(
-                              Icons.menu,
-                              color: Theme.of(context).iconTheme.color,
-                              size: Theme.of(context).iconTheme.size,
-                            ),
-                            trailing: Icon(
-                              Icons.share,
-                              color: Theme.of(context).iconTheme.color,
-                              size: Theme.of(context).iconTheme.size,
-                            ),
-//                            title: Center(
-//                                child: new Text(
-//                              "center title",
-//                              //                      snapshot.data[i].name +'  ' + snapshot.data[i].confirmed.toString() + ' , ' + snapshot.data[i].deaths.toString(),
-//                              style: Theme.of(context).textTheme.bodyText2,
-//                            ))
-                        ))
+                      leading: Icon(
+                        Icons.menu,
+                        color: Theme.of(context).iconTheme.color,
+                        size: Theme.of(context).iconTheme.size,
+                      ),
+                      trailing: Icon(
+                        Icons.share,
+                        color: Theme.of(context).iconTheme.color,
+                        size: Theme.of(context).iconTheme.size,
+                      ),
+                    ))
                   ],
                 ),
                 new Row(
                   children: <Widget>[
                     new Expanded(
                         child: new Container(
-                          padding:EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                            padding:
+                                EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
                             child: new Text(
-                      "WORLDWIDE",
-                      style: Theme.of(context).textTheme.headline5,
-                    )))
+                              "WORLDWIDE",
+                              style: Theme.of(context).textTheme.headline5,
+                            )))
                   ],
                 ),
-                new Row(
-                  children: <Widget>[new Text("testo3")],
-                ),
+                _build_top_numbers(),
               ],
             ),
           );
@@ -207,10 +195,35 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  Row _build_top_numbers() {
+    return new Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  _build_top_number(DEATHS_COLOR),
+                  _build_top_number(CASES_COLOR),
+                  _build_top_number(RECOVERED_COLOR),
+                ],
+              );
+  }
+
+  Column _build_top_number(Color DEATHS_COLOR) {
+    return new Column(
+                  children: <Widget>[
+                    new Text(
+                      "1000",
+                      style: TextStyle(
+                          fontSize: 36.0,
+                          fontWeight: FontWeight.bold,
+                          color: DEATHS_COLOR),
+                    )
+                  ],
+                );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _corona_data(),
+      body: _corona_body(),
     );
   }
 
