@@ -190,7 +190,7 @@ class _MyHomePageState extends State<MyHomePage> {
     var timeFormatter = DateFormat.Hms();
 
     var formattedDate = dateFormatter.format(date);
-    var formattedTime =  timeFormatter.format(date);
+    var formattedTime = timeFormatter.format(date);
 
     return new Padding(
         padding: EdgeInsets.fromLTRB(0, 10.0, 0, 8.0),
@@ -223,37 +223,59 @@ class _MyHomePageState extends State<MyHomePage> {
         child: new ListView.builder(
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
-      padding: const EdgeInsets.all(16.0),
+//      padding: const EdgeInsets.all(16.0),
       itemCount: corona_data.length,
       itemBuilder: (context, i) {
-        return ListTile(
-          onTap: () => setState(() {
-            _selected_country = corona_data[i].name;
-          }),
-          leading: _build_favorite_icon(corona_data[i].name, context),
-          title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                new Text(
-                  corona_data[i].name.toUpperCase().substring(
-                      0,
-                      corona_data[i].name.length > 18
-                          ? 18
-                          : corona_data[i].name.length),
-                  style: Theme.of(context).textTheme.headline4,
-                ),
-                new Text(
-                  _get_visible_number(corona_data[i]),
-                  style: TextStyle(color:filter2color[_filter], fontSize: 17.0),
-                )
-              ]),
-          trailing: _build_notification_icon(corona_data[i].name, context),
-        );
+        return new Container (
+              decoration: new BoxDecoration (
+                  color: corona_data[i].name == _selected_country ?  Colors.deepPurple[700] : Theme.of(context).primaryColor,
+              ),
+              child: ListTileTheme(
+                child: _build_bottom_list_listtile(corona_data[i], context),
+                selectedColor: Colors.white,
+                textColor: Theme.of(context).textTheme.headline4.color,
+              )
+          );
+
+
+
       },
     ));
   }
 
-  IconButton _build_notification_icon(String country_name, BuildContext context) {
+  ListTile _build_bottom_list_listtile(
+      CoronaData corona_data, BuildContext context) {
+
+    Row _build_list_tile_row(CoronaData corona_data) {
+      return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            new Text(
+              corona_data.name.toUpperCase().substring(0,
+                  corona_data.name.length > 18 ? 18 : corona_data.name.length),
+//              style: Theme.of(context).textTheme.headline4,
+            ),
+            new Text(
+              _get_visible_number(corona_data),
+              style: TextStyle(color: filter2color[_filter], fontSize: 17.0),
+            )
+          ]);
+    }
+
+    return ListTile(
+      enabled: true,
+      selected: corona_data.name == _selected_country,
+      onTap: () => setState(() {
+        _selected_country = corona_data.name;
+      }),
+      leading: _build_favorite_icon(corona_data.name, context),
+      title: _build_list_tile_row(corona_data),
+      trailing: _build_notification_icon(corona_data.name, context),
+    );
+  }
+
+  IconButton _build_notification_icon(
+      String country_name, BuildContext context) {
     return IconButton(
       icon: Icon(
         _notification_countries.contains(country_name)
@@ -262,12 +284,13 @@ class _MyHomePageState extends State<MyHomePage> {
         color: Theme.of(context).iconTheme.color,
         size: Theme.of(context).iconTheme.size,
       ),
-//      tooltip: 'Tap to get notifications',
-      onPressed: () => update_countries(country_name, _notification_countries, save_notification_countries),
+      onPressed: () => update_countries(
+          country_name, _notification_countries, save_notification_countries),
     );
   }
 
-  void update_countries(String country_name, Set<String> current_country_set, Function saving_function) {
+  void update_countries(String country_name, Set<String> current_country_set,
+      Function saving_function) {
     if (current_country_set.contains(country_name)) {
       current_country_set.remove(country_name);
     } else {
@@ -279,16 +302,16 @@ class _MyHomePageState extends State<MyHomePage> {
 
   IconButton _build_favorite_icon(String country_name, BuildContext context) {
     return IconButton(
-          icon: Icon(
-            _favorite_countries.contains(country_name)
-                ? Icons.star
-                : Icons.star_border,
-            color: Theme.of(context).iconTheme.color,
-            size: Theme.of(context).iconTheme.size,
-          ),
-//          tooltip: 'Add to favorite',
-          onPressed: () => update_countries(country_name, _favorite_countries, save_favorite_countries),
-        );
+      icon: Icon(
+        _favorite_countries.contains(country_name)
+            ? Icons.star
+            : Icons.star_border,
+        color: Theme.of(context).iconTheme.color,
+        size: Theme.of(context).iconTheme.size,
+      ),
+      onPressed: () => update_countries(
+          country_name, _favorite_countries, save_favorite_countries),
+    );
   }
 
   Row _build_filter_icons_row(BuildContext context) {
@@ -305,7 +328,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   : Theme.of(context).iconTheme.color,
               size: Theme.of(context).iconTheme.size,
             ),
-//            tooltip: 'Filter by ',
             onPressed: () {
               setState(() {
                 _filter = filter_type;
@@ -424,21 +446,17 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   get_favorite_countries_from_shared_preferences() async {
-    _favorite_countries = await get_shared_preferences('favorite_countries', _favorite_countries);
-    print('11111');
-    print(_favorite_countries);
+    _favorite_countries =
+        await get_shared_preferences('favorite_countries', _favorite_countries);
   }
+
   get_notification_countries_from_shared_preferences() async {
-    _notification_countries = await get_shared_preferences('notification_countries', _notification_countries);
-    print('3333');
-    print(_notification_countries);
+    _notification_countries = await get_shared_preferences(
+        'notification_countries', _notification_countries);
   }
 
   get_shared_preferences(String key, Set<String> field_to_fill) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    print('22222');
-    print(prefs.getKeys());
-    print(prefs.get('favorite_countries'));
     var tmp = prefs.getStringList(key);
     if (tmp != null) {
       return tmp.toSet();
@@ -447,10 +465,13 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   save_favorite_countries(Set<String> favorite_countries) async {
-    await save_shared_preferences('favorite_countries', favorite_countries.toList());
+    await save_shared_preferences(
+        'favorite_countries', favorite_countries.toList());
   }
+
   save_notification_countries(Set<String> notification_countries) async {
-    await save_shared_preferences('notification_countries', notification_countries.toList());
+    await save_shared_preferences(
+        'notification_countries', notification_countries.toList());
   }
 
   save_shared_preferences(String key, List<String> strings_to_save) async {
@@ -461,18 +482,18 @@ class _MyHomePageState extends State<MyHomePage> {
   void apply_filter() {
     if (_filter != null && _filtered_corona_data != null) {
       if (_filter == FILTERS.CASES) {
-        _filtered_corona_data.sort((a, b) => compare(a, b, (e)=>e.confirmed));
+        _filtered_corona_data.sort((a, b) => compare(a, b, (e) => e.confirmed));
       } else if (_filter == FILTERS.DEATHS) {
-        _filtered_corona_data.sort((a, b) => compare(a, b, (e)=>e.deaths));
+        _filtered_corona_data.sort((a, b) => compare(a, b, (e) => e.deaths));
       } else {
-        _filtered_corona_data.sort((a, b) => compare(a, b, (e)=>e.recovered));
+        _filtered_corona_data.sort((a, b) => compare(a, b, (e) => e.recovered));
       }
     }
   }
 
   int compare(CoronaData a, CoronaData b, Function accessor) {
     if (is_country_pair_comparable(a, b)) {
-      return accessor(a) >accessor(b) ? -1 : 1;
+      return accessor(a) > accessor(b) ? -1 : 1;
     }
     if (_favorite_countries.contains(a.name)) {
       return -1;
@@ -482,8 +503,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   bool is_country_pair_comparable(CoronaData a, CoronaData b) {
     return _favorite_countries.contains(a.name) &&
-                _favorite_countries.contains(b.name) ||
-            !_favorite_countries.contains(a.name) &&
-                !_favorite_countries.contains(b.name);
+            _favorite_countries.contains(b.name) ||
+        !_favorite_countries.contains(a.name) &&
+            !_favorite_countries.contains(b.name);
   }
 }
