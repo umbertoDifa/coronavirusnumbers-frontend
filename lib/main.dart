@@ -159,6 +159,7 @@ class _MyHomePageState extends State<MyHomePage> {
   FILTERS _filter = FILTERS.CASES;
   String _selected_country = null;
   Set<String> _favorite_countries = {};
+  Set<String> _notification_countries = {};
 //  SharedPreferences _shared_preferences;
 
   fetchCoronaData() async {
@@ -200,8 +201,7 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     fetchCoronaData();
     get_favorite_countries_from_shared_preferences();
-//    get_shared_preferences();
-//    print(_shared_preferences.getKeys());
+    get_notification_countries_from_shared_preferences();
   }
 
   Widget _corona_body() {
@@ -263,25 +263,7 @@ class _MyHomePageState extends State<MyHomePage> {
           onTap: () => setState(() {
             _selected_country = corona_data[i].name;
           }),
-          leading: IconButton(
-            icon: Icon(
-              _favorite_countries.contains(corona_data[i].name)
-                  ? Icons.star
-                  : Icons.star_border,
-              color: Theme.of(context).iconTheme.color,
-              size: Theme.of(context).iconTheme.size,
-            ),
-            tooltip: 'Add to favorite',
-            onPressed: () {
-              if (_favorite_countries.contains(corona_data[i].name)) {
-                _favorite_countries.remove(corona_data[i].name);
-              } else {
-                _favorite_countries.add(corona_data[i].name);
-              }
-              save_favorite_countries(_favorite_countries);
-              setState(() {});
-            },
-          ),
+          leading: _build_favorite_icon(corona_data[i].name, context),
           title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
@@ -298,10 +280,48 @@ class _MyHomePageState extends State<MyHomePage> {
                   style: Theme.of(context).textTheme.headline4,
                 )
               ]),
-          trailing: _build_themed_icon(Icons.notifications),
+          trailing: _build_notification_icon(corona_data[i].name, context),
         );
       },
     ));
+  }
+
+  IconButton _build_notification_icon(String country_name, BuildContext context) {
+    return IconButton(
+      icon: Icon(
+        _notification_countries.contains(country_name)
+            ? Icons.notifications
+            : Icons.notifications_none,
+        color: Theme.of(context).iconTheme.color,
+        size: Theme.of(context).iconTheme.size,
+      ),
+      tooltip: 'Tap to get notifications',
+      onPressed: () => update_countries(country_name, _notification_countries, save_notification_countries),
+    );
+  }
+
+  void update_countries(String country_name, Set<String> current_country_set, Function saving_function) {
+    if (current_country_set.contains(country_name)) {
+      current_country_set.remove(country_name);
+    } else {
+      current_country_set.add(country_name);
+    }
+    saving_function(current_country_set);
+    setState(() {});
+  }
+
+  IconButton _build_favorite_icon(String country_name, BuildContext context) {
+    return IconButton(
+          icon: Icon(
+            _favorite_countries.contains(country_name)
+                ? Icons.star
+                : Icons.star_border,
+            color: Theme.of(context).iconTheme.color,
+            size: Theme.of(context).iconTheme.size,
+          ),
+          tooltip: 'Add to favorite',
+          onPressed: () => update_countries(country_name, _favorite_countries, save_favorite_countries),
+        );
   }
 
   Row _build_filter_icons_row(BuildContext context) {
@@ -437,14 +457,31 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   get_favorite_countries_from_shared_preferences() async {
+    get_shared_preferences('favorite_countries', _favorite_countries);
+  }
+  get_notification_countries_from_shared_preferences() async {
+    get_shared_preferences('notification_countries', _notification_countries);
+  }
+
+  get_shared_preferences(String key, Set<String> field_to_fill) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    _favorite_countries = prefs.getStringList('favorite_countries').toSet();
+    var tmp = prefs.getStringList(key);
+    if (tmp != null) {
+      field_to_fill = tmp.toSet();
+    }
+    field_to_fill = {};
   }
 
   save_favorite_countries(Set<String> favorite_countries) async {
+    await save_shared_preferences('favorite_countries', favorite_countries.toList());
+  }
+  save_notification_countries(Set<String> notification_countries) async {
+    await save_shared_preferences('notification_countries', notification_countries.toList());
+  }
+
+  save_shared_preferences(String key, List<String> strings_to_save) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setStringList(
-        'favorite_countries', favorite_countries.toList());
+    await prefs.setStringList(key, strings_to_save);
   }
 
   void apply_filter() {
