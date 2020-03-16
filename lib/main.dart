@@ -61,6 +61,7 @@ const MaterialColor primaryPurple = MaterialColor(
     900: BACKGROUND_COLOR,
   },
 );
+var highlight_purple = Colors.deepPurple[700];
 
 enum FILTERS {
   CASES,
@@ -226,26 +227,23 @@ class _MyHomePageState extends State<MyHomePage> {
 //      padding: const EdgeInsets.all(16.0),
       itemCount: corona_data.length,
       itemBuilder: (context, i) {
-        return new Container (
-              decoration: new BoxDecoration (
-                  color: corona_data[i].name == _selected_country ?  Colors.deepPurple[700] : Theme.of(context).primaryColor,
-              ),
-              child: ListTileTheme(
-                child: _build_bottom_list_listtile(corona_data[i], context),
-                selectedColor: Colors.white,
-                textColor: Theme.of(context).textTheme.headline4.color,
-              )
-          );
-
-
-
+        return new Container(
+            decoration: new BoxDecoration(
+              color: corona_data[i].name == _selected_country
+                  ? highlight_purple
+                  : Theme.of(context).primaryColor,
+            ),
+            child: ListTileTheme(
+              child: _build_bottom_list_listtile(corona_data[i], context),
+              selectedColor: Colors.white,
+              textColor: Theme.of(context).textTheme.headline4.color,
+            ));
       },
     ));
   }
 
   ListTile _build_bottom_list_listtile(
-      CoronaData corona_data, BuildContext context) {
-
+      CoronaData country, BuildContext context) {
     Row _build_list_tile_row(CoronaData corona_data) {
       return Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -257,22 +255,28 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             new Text(
               _get_visible_number(corona_data),
-              style: TextStyle(color: filter2color[_filter], fontSize: 17.0),
+              style: TextStyle(
+                  color: filter2color[_filter],
+                  fontSize: 17.0,
+                  fontWeight: FontWeight.bold),
             )
           ]);
     }
 
     return ListTile(
       enabled: true,
-      selected: corona_data.name == _selected_country,
+      selected: is_country_selected(country),
       onTap: () => setState(() {
-        _selected_country = corona_data.name;
+        _selected_country = country.name;
       }),
-      leading: _build_favorite_icon(corona_data.name, context),
-      title: _build_list_tile_row(corona_data),
-      trailing: _build_notification_icon(corona_data.name, context),
+      leading: _build_favorite_icon(country.name, context),
+      title: _build_list_tile_row(country),
+      trailing: _build_notification_icon(country.name, context),
     );
   }
+
+  bool is_country_selected(CoronaData corona_data) =>
+      corona_data.name == _selected_country;
 
   IconButton _build_notification_icon(
       String country_name, BuildContext context) {
@@ -348,7 +352,7 @@ class _MyHomePageState extends State<MyHomePage> {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
-        _build_filter_icon(context, MyCustomIcons.cases, FILTERS.CASES),
+        _build_filter_icon(context, MyCustomIcons.confirmed, FILTERS.CASES),
         _build_filter_icon(context, MyCustomIcons.deaths, FILTERS.DEATHS),
         _build_filter_icon(context, MyCustomIcons.recovered, FILTERS.RECOVERED),
       ],
@@ -390,12 +394,22 @@ class _MyHomePageState extends State<MyHomePage> {
                       ? "WORLDWIDE"
                       : _selected_country.toUpperCase(),
                   style: Theme.of(context).textTheme.headline5,
-                )))
+                ))),
+        new IconButton(
+            icon: Icon(
+              MyCustomIcons.globe,
+              color: (_selected_country == null) ? Colors.white  : Theme.of(context).iconTheme.color,
+              size: Theme.of(context).iconTheme.size,
+            ),
+            onPressed: () {
+              _selected_country = null;
+              setState(() {});
+            }),
       ],
     );
   }
 
-  Row _build_top_numbers_row(List<CoronaData> snapshot) {
+  Row _build_top_numbers_row(List<CoronaData> corona_data) {
     Column _build_top_number(Color text_color, int number) {
       return new Column(
         children: <Widget>[
@@ -408,21 +422,21 @@ class _MyHomePageState extends State<MyHomePage> {
       );
     }
 
-    var totalConfirmed = snapshot
-        .where((element) =>
-            _selected_country == null || element.name == _selected_country)
+    var totalConfirmed = corona_data
+        .where((country) =>
+            _selected_country == null || is_country_selected(country))
         .map((e) => e.confirmed)
         .reduce((value, element) => value + element);
 
-    var totalDeaths = snapshot
-        .where((element) =>
-            _selected_country == null || element.name == _selected_country)
+    var totalDeaths = corona_data
+        .where((country) =>
+            _selected_country == null || is_country_selected(country))
         .map((e) => e.deaths)
         .reduce((value, element) => value + element);
 
-    var totalRecovered = snapshot
-        .where((element) =>
-            _selected_country == null || element.name == _selected_country)
+    var totalRecovered = corona_data
+        .where((country) =>
+            _selected_country == null || is_country_selected(country))
         .map((e) => e.recovered)
         .reduce((value, element) => value + element);
 
