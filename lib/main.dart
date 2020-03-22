@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:math';
 
 import 'package:corona_virus/icons/custom_icons.dart';
@@ -13,8 +12,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 class CoronaData {
   final String name;
   final int last_update;
-//  final Double lat;
-//  final Double lng;
   final int confirmed;
   final int deaths;
   final int recovered;
@@ -22,7 +19,6 @@ class CoronaData {
   CoronaData(
       {this.name,
       this.last_update,
-//    this.lat, this.lng,
       this.confirmed,
       this.deaths,
       this.recovered});
@@ -31,8 +27,6 @@ class CoronaData {
     return CoronaData(
         name: json['name'],
         last_update: json['updatedAt'],
-//      lat: json['features'][0]['attributes']['Lat'],
-//      lng: json['features'][0]['attributes']['Long_'],
         confirmed: json['confirmed'],
         deaths: json['deaths'],
         recovered: json['recovered']);
@@ -86,8 +80,8 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
+    return new MaterialApp(
+      title: 'Corona Numbers',
       theme: ThemeData(
         primarySwatch: primaryPurple,
         backgroundColor: primaryPurple,
@@ -129,18 +123,21 @@ class _MyHomePageState extends State<MyHomePage> {
   Set<String> _favorite_countries = {};
   Set<String> _notification_countries = {};
 
+  final SERVER_IP = '34.247.255.80';
+  final SERVER_PORT = '8080';
+
   fetchCoronaData() async {
     setState(() {
       is_fetching = true;
     });
 
-    final response = await http.get('http://34.247.255.80:8080/api/v1/country');
+    final response = await http
+        .get('http://' + SERVER_IP + ':' + SERVER_PORT + '/api/v1/country');
     print(response);
     print(response.statusCode);
     print(response.body);
     print(response);
     print(response.toString());
-
 
     var countries;
 
@@ -183,7 +180,6 @@ class _MyHomePageState extends State<MyHomePage> {
       color: Theme.of(context).primaryColor,
       child: Column(
         children: <Widget>[
-//          _build_top_icons_row(context),
           _build_top_name_row(context),
           _build_top_numbers_row(_filtered_corona_data),
           _build_filter_icons_row(context),
@@ -279,7 +275,6 @@ class _MyHomePageState extends State<MyHomePage> {
       }),
       leading: _build_favorite_icon(country.name, context),
       title: _build_list_tile_row(country),
-//      trailing: _build_notification_icon(country.name, context),
     );
   }
 
@@ -375,22 +370,6 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Row _build_top_icons_row(BuildContext context) {
-    Expanded _build_top_icons(BuildContext context) {
-      return new Expanded(
-          child: new ListTile(
-        leading: _build_themed_icon(Icons.menu),
-        trailing: _build_themed_icon(Icons.share),
-      ));
-    }
-
-    return new Row(
-      children: <Widget>[
-        _build_top_icons(context),
-      ],
-    );
-  }
-
   Row _build_top_name_row(BuildContext context) {
     return new Row(
       children: <Widget>[
@@ -406,7 +385,9 @@ class _MyHomePageState extends State<MyHomePage> {
         new IconButton(
             icon: Icon(
               MyCustomIcons.globe,
-              color: (_selected_country == null) ? Colors.white  : Theme.of(context).iconTheme.color,
+              color: (_selected_country == null)
+                  ? Colors.white
+                  : Theme.of(context).iconTheme.color,
               size: Theme.of(context).iconTheme.size,
             ),
             onPressed: () {
