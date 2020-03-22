@@ -5,5 +5,3 @@ var path = require('path');
 app.use(express.static('../build/web'));
 
 app.listen(8080);
-
-console.log('listenint');
