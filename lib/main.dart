@@ -1,5 +1,5 @@
-import 'dart:collection';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:corona_virus/icons/custom_icons.dart';
@@ -7,7 +7,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:http/http.dart' as http;
-import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -123,26 +122,37 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   Future<List<CoronaData>> futureCoronaData;
-  Position _currentPosition;
   List<CoronaData> _filtered_corona_data;
   bool is_fetching;
   FILTERS _filter = FILTERS.CASES;
   String _selected_country = null;
   Set<String> _favorite_countries = {};
   Set<String> _notification_countries = {};
-//  SharedPreferences _shared_preferences;
 
   fetchCoronaData() async {
     setState(() {
       is_fetching = true;
     });
-    final response = await http.get('http://34.247.255.80/api/v1/country');
+
+    final response = await http.get('http://34.247.255.80:8080/api/v1/country');
+    print(response);
+    print(response.statusCode);
+    print(response.body);
+    print(response);
+    print(response.toString());
+
+
     var countries;
+
     if (response.statusCode == 200) {
       var body = json.decode(response.body);
       countries = body['countries'];
     } else {
-      throw Exception('Failed to load album');
+      setState(() {
+        is_fetching = false;
+        _filtered_corona_data = [];
+      });
+      throw Exception('Failed to load corona data');
     }
 
     List<CoronaData> corona_data_list = [];
@@ -173,7 +183,7 @@ class _MyHomePageState extends State<MyHomePage> {
       color: Theme.of(context).primaryColor,
       child: Column(
         children: <Widget>[
-          _build_top_icons_row(context),
+//          _build_top_icons_row(context),
           _build_top_name_row(context),
           _build_top_numbers_row(_filtered_corona_data),
           _build_filter_icons_row(context),
@@ -224,7 +234,6 @@ class _MyHomePageState extends State<MyHomePage> {
         child: new ListView.builder(
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
-//      padding: const EdgeInsets.all(16.0),
       itemCount: corona_data.length,
       itemBuilder: (context, i) {
         return new Container(
@@ -250,8 +259,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             new Text(
               corona_data.name.toUpperCase().substring(0,
-                  corona_data.name.length > 18 ? 18 : corona_data.name.length),
-//              style: Theme.of(context).textTheme.headline4,
+                  corona_data.name.length > 17 ? 17 : corona_data.name.length),
             ),
             new Text(
               _get_visible_number(corona_data),
@@ -271,7 +279,7 @@ class _MyHomePageState extends State<MyHomePage> {
       }),
       leading: _build_favorite_icon(country.name, context),
       title: _build_list_tile_row(country),
-      trailing: _build_notification_icon(country.name, context),
+//      trailing: _build_notification_icon(country.name, context),
     );
   }
 
@@ -475,7 +483,7 @@ class _MyHomePageState extends State<MyHomePage> {
     if (tmp != null) {
       return tmp.toSet();
     }
-    return {};
+    return new Set<String>();
   }
 
   save_favorite_countries(Set<String> favorite_countries) async {

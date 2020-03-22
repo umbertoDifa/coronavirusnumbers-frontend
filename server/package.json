@@ -1,0 +1,27 @@
+{
+  "name": "corona_virus",
+  "version": "1.0.0",
+  "description": "A new Flutter project.",
+  "main": "server.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "build": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/orsobruno/client-dart.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/orsobruno/client-dart/issues"
+  },
+  "homepage": "https://gitlab.com/orsobruno/client-dart#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
