@@ -123,7 +123,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Set<String> _favorite_countries = {};
   Set<String> _notification_countries = {};
 
-  final SERVER_IP = '34.247.255.80';
+  final SERVER_IP = '144.91.81.66';
   final SERVER_PORT = '8080';
 
   fetchCoronaData() async {
