@@ -17,8 +17,6 @@ RUN flutter build web
 FROM node:11.1.0-alpine
 
 EXPOSE 8080
-RUN apk add --no-cache --virtual .gyp \
-        python
 
 RUN mkdir /home/node/frontend
 WORKDIR /home/node/frontend
@@ -28,6 +26,9 @@ COPY --from=builder /home/frontend_code/build/web ./build/web
 #modify request to avoid credentials
 RUN sed -i 's/include/omit/g' build/web/flutter_service_worker.js
 
-WORKDIR /home/node/frontend/build/web
+COPY server ./server
+WORKDIR /home/node/frontend/server
 
-CMD /usr/bin/python -m SimpleHTTPServer 8080
+RUN npm install
+
+CMD node server.js
