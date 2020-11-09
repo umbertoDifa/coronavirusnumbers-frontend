@@ -28,7 +28,7 @@ class CoronaData {
         name: json['name'],
         last_update: json['updatedAt'],
         confirmed: json['confirmed'],
-        deaths: json['deaths'],
+        deaths: json['deaths'],        
         recovered: json['recovered']);
   }
 }
@@ -119,20 +119,22 @@ class _MyHomePageState extends State<MyHomePage> {
   List<CoronaData> _filtered_corona_data;
   bool is_fetching;
   FILTERS _filter = FILTERS.CASES;
-  String _selected_country = null;
+  String _selected_country;
   Set<String> _favorite_countries = {};
   Set<String> _notification_countries = {};
 
   final SERVER_IP = '144.91.81.66';
-  final SERVER_PORT = '8080';
-
+  final SERVER_PORT = '443';
+  
   fetchCoronaData() async {
     setState(() {
       is_fetching = true;
     });
 
+    // final response = await http
+    //     .get('http://' + SERVER_IP + ':' + SERVER_PORT + '/api/v1/country');
     final response = await http
-        .get('http://' + SERVER_IP + ':' + SERVER_PORT + '/api/v1/country');
+        .get('https://coronavirusnumbers-express-api.herokuapp.com' + ':' + SERVER_PORT + '/api/v1/country');
     print(response);
     print(response.statusCode);
     print(response.body);
@@ -426,15 +428,15 @@ class _MyHomePageState extends State<MyHomePage> {
     var totalRecovered = corona_data
         .where((country) =>
             _selected_country == null || is_country_selected(country))
-        .map((e) => e.recovered)
-        .reduce((value, element) => value + element);
+            .map((e) => e.recovered)
+        .reduce((value, element) => element != null ? value + element : value);
 
     return new Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
         _build_top_number(CASES_COLOR, totalConfirmed),
         _build_top_number(DEATHS_COLOR, totalDeaths),
-        _build_top_number(RECOVERED_COLOR, totalRecovered),
+        _build_top_number(RECOVERED_COLOR, totalRecovered), 
       ],
     );
   }
@@ -489,7 +491,7 @@ class _MyHomePageState extends State<MyHomePage> {
       } else if (_filter == FILTERS.DEATHS) {
         _filtered_corona_data.sort((a, b) => compare(a, b, (e) => e.deaths));
       } else {
-        _filtered_corona_data.sort((a, b) => compare(a, b, (e) => e.recovered));
+        _filtered_corona_data.sort((a, b) => compare(a, b, (e) => e.recovered == null ? 0 : e.recovered));
       }
     }
   }
