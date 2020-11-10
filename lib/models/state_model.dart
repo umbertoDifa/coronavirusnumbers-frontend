@@ -11,9 +11,9 @@ class StateModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  FILTERS _selectedFilter = FILTERS.CASES;
-  FILTERS get selectedFilter => _selectedFilter;
-  void set selectedFilter(FILTERS filter) {
+  FILTER _selectedFilter = FILTER.CASES;
+  FILTER get selectedFilter => _selectedFilter;
+  void set selectedFilter(FILTER filter) {
     _selectedFilter = filter;
     notifyListeners();
   }
@@ -43,20 +43,41 @@ class StateModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  String _searchString;
+  String get searchString => _searchString;
+  void set searchString(String s) {
+    _searchString = s;
+    notifyListeners();
+  }
+
   List<CoronaData> get filteredCoronaData {
     if (_selectedFilter != null && _coronaData != null) {
-      if (_selectedFilter == FILTERS.CASES) {
-        _coronaData.sort((a, b) => compare(a, b, (e) => e.confirmed));
-      } else if (_selectedFilter == FILTERS.DEATHS) {
-        _coronaData.sort((a, b) => compare(a, b, (e) => e.deaths));
-      } else {
-        _coronaData.sort((a, b) =>
-            compare(a, b, (e) => e.recovered == null ? 0 : e.recovered));
-      }
-      return _coronaData;
+      orderByFilterType(_coronaData, _selectedFilter);
+      return filterBySearchString(_coronaData, _searchString);
     } else {
-      print('empty filteredcoronadata');
       return [];
+    }
+  }
+
+  List<CoronaData> filterBySearchString(List<CoronaData> data, String query) {
+    if (data == null || query == null || query.isEmpty) {
+      return data;
+    }
+    return data
+        .where((c) => c.name.toLowerCase().contains(query.toLowerCase()))
+        .toList();
+  }
+
+  void orderByFilterType(List<CoronaData> data, FILTER filter) {
+    if (filter == FILTER.CASES) {
+      data.sort((a, b) =>
+          compare(a, b, (e) => e.confirmed == null ? 0 : e.confirmed));
+    } else if (filter == FILTER.DEATHS) {
+      data.sort(
+          (a, b) => compare(a, b, (e) => e.deaths == null ? 0 : e.deaths));
+    } else {
+      data.sort((a, b) =>
+          compare(a, b, (e) => e.recovered == null ? 0 : e.recovered));
     }
   }
 

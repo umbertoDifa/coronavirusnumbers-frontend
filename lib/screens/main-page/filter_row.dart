@@ -3,23 +3,24 @@ import 'package:corona_virus/theme/style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:corona_virus/icons/custom_icons.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 
-enum FILTERS {
+enum FILTER {
   CASES,
   RECOVERED,
   DEATHS,
 }
 
-Map<FILTERS, String> filter2name = {
-  FILTERS.CASES: 'CASES',
-  FILTERS.DEATHS: 'DEATHS',
-  FILTERS.RECOVERED: 'RECOVERED',
+Map<FILTER, String> filter2name = {
+  FILTER.CASES: 'CASES',
+  FILTER.DEATHS: 'DEATHS',
+  FILTER.RECOVERED: 'RECOVERED',
 };
 
-Map<FILTERS, Color> filter2color = {
-  FILTERS.CASES: CASES_COLOR,
-  FILTERS.DEATHS: DEATHS_COLOR,
-  FILTERS.RECOVERED: RECOVERED_COLOR,
+Map<FILTER, Color> filter2color = {
+  FILTER.CASES: CASES_COLOR,
+  FILTER.DEATHS: DEATHS_COLOR,
+  FILTER.RECOVERED: RECOVERED_COLOR,
 };
 
 class FilterRow extends StatelessWidget {
@@ -29,38 +30,47 @@ class FilterRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Column _build_filter_icon(
-        BuildContext context, IconData icon, FILTERS filter_type) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          IconButton(
-            icon: Icon(
-              icon,
-              color: (this.state.selectedFilter == filter_type)
-                  ? filter2color[filter_type]
-                  : Theme.of(context).iconTheme.color,
-              size: Theme.of(context).iconTheme.size,
-            ),
-            onPressed: () => this.state.selectedFilter = filter_type,
+    InkWell buildFilterIcon(
+        BuildContext context, IconData icon, FILTER filterType) {
+      return new InkWell(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              IconButton(
+                splashRadius: 10.0,
+                icon: Icon(
+                  icon,
+                  color: (this.state.selectedFilter == filterType)
+                      ? filter2color[filterType]
+                      : Theme.of(context).iconTheme.color,
+                  size: Theme.of(context).iconTheme.size,
+                ),
+              ),
+              Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: Text(
+                    filter2name[filterType],
+                    style: TextStyle(
+                        color: (this.state.selectedFilter == filterType)
+                            ? filter2color[filterType]
+                            : Theme.of(context).textTheme.headline6.color,
+                        fontSize:
+                            Theme.of(context).textTheme.headline6.fontSize,
+                        fontWeight:
+                            Theme.of(context).textTheme.headline6.fontWeight),
+                  )),
+            ],
           ),
-          Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text(
-                filter2name[filter_type],
-                style: Theme.of(context).textTheme.headline6,
-              )),
-        ],
-      );
+          onTap: () => this.state.selectedFilter = filterType);
     }
 
     return new Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
-        _build_filter_icon(context, MyCustomIcons.confirmed, FILTERS.CASES),
-        _build_filter_icon(context, MyCustomIcons.deaths, FILTERS.DEATHS),
-        _build_filter_icon(context, MyCustomIcons.recovered, FILTERS.RECOVERED),
+        buildFilterIcon(context, FontAwesome5.address_book, FILTER.CASES),
+        buildFilterIcon(context, MyCustomIcons.deaths, FILTER.DEATHS),
+        buildFilterIcon(context, FontAwesome5.heart, FILTER.RECOVERED),
       ],
     );
   }

@@ -12,7 +12,8 @@ class LastUpdatedRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var maxLastUpdate = this.state.coronaData.map((e) => e.last_update).reduce(max);
+    var maxLastUpdate =
+        this.state.coronaData.map((e) => e.last_update).reduce(max);
     var date = new DateTime.fromMillisecondsSinceEpoch(maxLastUpdate);
     var dateFormatter = DateFormat.yMd();
     var timeFormatter = DateFormat.Hms();
