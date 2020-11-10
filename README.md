@@ -8,6 +8,13 @@ The Provider pattern is used to manage the state.
 
 [Backend](https://github.com/Carassale/coronavirusnumbers-express-api) thanks to [@Carassale](https://github.com/Carassale) 
 
+## Features
+- World high-level stats & Country specific stats
+- Order by _CASES_, _DEATHS_ and _RECOVERED_
+- Search by country name
+- Add country to favorites to see it at the top of the list
+
+![](./screenshot.jpeg )
 ## Build
 - `docker-compose up`
 - connect to `localhost:8080`
