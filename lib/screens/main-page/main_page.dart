@@ -12,23 +12,31 @@ import 'package:provider/provider.dart';
 class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Theme.of(context).primaryColor,
-      child: Column(
-        children: <Widget>[
-          Consumer<StateModel>(
-              builder: (context, state, child) => TopNameRow(state)),
-          Consumer<StateModel>(
-              builder: (context, state, child) => TopNumbersRow(state)),
-          Consumer<StateModel>(
-              builder: (context, state, child) => FilterRow(state)),
-          SearchBar(),
-          Consumer<StateModel>(
-              builder: (context, state, child) => CountryList(state)),
-          Consumer<StateModel>(
-              builder: (context, state, child) => LastUpdatedRow(state)),
-        ],
+    return GestureDetector(
+      child: Container(
+        color: Theme.of(context).primaryColor,
+        child: Column(
+          children: <Widget>[
+            Consumer<StateModel>(
+                builder: (context, state, child) => TopNameRow(state)),
+            Consumer<StateModel>(
+                builder: (context, state, child) => TopNumbersRow(state)),
+            Consumer<StateModel>(
+                builder: (context, state, child) => FilterRow(state)),
+            SearchBar(),
+            Consumer<StateModel>(
+                builder: (context, state, child) => CountryList(state)),
+            Consumer<StateModel>(
+                builder: (context, state, child) => LastUpdatedRow(state)),
+          ],
+        ),
       ),
+      onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
+        if (!currentFocus.hasPrimaryFocus) {
+          currentFocus.unfocus();
+        }
+      },
     );
   }
 }
