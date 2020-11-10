@@ -1,8 +1,14 @@
-# corona_virus
+# Corona Virus Numbers
 
-A new Flutter project.
+A flutter project to visualize statistics about corona data.
+
+[Live hosted on github pages!](https://umbertodifa.github.io/coronavirusnumbers-frontend/)
+
+[Backend](https://github.com/Carassale/coronavirusnumbers-express-api) thanks to [@Carassale](https://github.com/Carassale) 
 
 ## Run it
-- `sudo docker build . -t frontend`
-- `sudo docker run  -p 8080:8080 frontend`
+- `docker-compose up`
 - connect to `localhost:8080`
+
+## Data
+Data is fetched from the [JohnHopkins Project](https://coronavirus.jhu.edu/map.html)
