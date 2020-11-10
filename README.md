@@ -14,7 +14,8 @@ The Provider pattern is used to manage the state.
 - Search by country name
 - Add country to favorites to see it at the top of the list
 
-![](./screenshot.jpeg )
+<img src="./screenshot.jpeg" width="350">
+
 ## Build
 - `docker-compose up`
 - connect to `localhost:8080`
