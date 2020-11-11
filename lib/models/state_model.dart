@@ -1,5 +1,5 @@
 import 'package:corona_virus/models/corona_data.dart';
-import 'package:corona_virus/screens/main-page/filter_row.dart';
+import 'package:corona_virus/models/filter_config.dart';
 import 'package:corona_virus/services/shared_preferences.dart';
 import 'package:flutter/foundation.dart';
 

@@ -14,7 +14,7 @@ class _SearchBarState extends State<SearchBar> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.fromLTRB(18.0, 6.0, 18.0, 6.0),
       child: TextField(
         onChanged: (value) {
           Provider.of<StateModel>(context, listen: false).searchString = value;

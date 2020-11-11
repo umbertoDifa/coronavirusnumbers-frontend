@@ -35,9 +35,7 @@ class _TopNameRowState extends State<TopNameRow> {
                   : Theme.of(context).iconTheme.color,
               size: Theme.of(context).iconTheme.size,
             ),
-            onPressed: () => this.widget.state.selectedCountry = null
-            // setState(() {});
-            ),
+            onPressed: () => this.widget.state.selectedCountry = null),
       ],
     );
   }

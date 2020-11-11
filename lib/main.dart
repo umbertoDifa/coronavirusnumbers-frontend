@@ -43,9 +43,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   _MyHomePageState(this.globalState);
 
-  final ApiManager apiManager =
-      ApiManager('https://coronavirusnumbers-express-api.herokuapp.com', '443');
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,7 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _isFetching = true;
     });
-    var data = await apiManager.fetchCoronaData();
+    var data = await ApiManager.fetchCoronaData();
     setState(() {
       _isFetching = false;
     });

@@ -3,12 +3,11 @@ import 'dart:convert';
 import 'package:corona_virus/models/corona_data.dart';
 
 class ApiManager {
-  String serverUrl;
-  String serverPort;
+  static String serverUrl =
+      'https://coronavirusnumbers-express-api.herokuapp.com';
+  static String serverPort = '443';
 
-  ApiManager(this.serverUrl, this.serverPort);
-
-  Future<List<CoronaData>> fetchCoronaData() async {
+  static Future<List<CoronaData>> fetchCoronaData() async {
     final response =
         await http.get(serverUrl + ':' + serverPort + '/api/v1/country');
 
@@ -21,12 +20,12 @@ class ApiManager {
       return [];
     }
 
-    List<CoronaData> corona_data_list = [];
+    List<CoronaData> coronaDataList = [];
 
     for (var i = 0; i < countries.length; i++) {
-      corona_data_list.add(CoronaData.fromJson(countries[i]));
+      coronaDataList.add(CoronaData.fromJson(countries[i]));
     }
 
-    return corona_data_list;
+    return coronaDataList;
   }
 }

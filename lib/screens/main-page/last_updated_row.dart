@@ -5,15 +5,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class LastUpdatedRow extends StatelessWidget {
+class LastUpdatedRow extends StatefulWidget {
   StateModel state;
 
   LastUpdatedRow(this.state);
 
   @override
+  _LastUpdatedRowState createState() => _LastUpdatedRowState();
+}
+
+class _LastUpdatedRowState extends State<LastUpdatedRow> {
+  @override
   Widget build(BuildContext context) {
     var maxLastUpdate =
-        this.state.coronaData.map((e) => e.last_update).reduce(max);
+        this.widget.state.coronaData.map((e) => e.last_update).reduce(max);
     var date = new DateTime.fromMillisecondsSinceEpoch(maxLastUpdate);
     var dateFormatter = DateFormat.yMd();
     var timeFormatter = DateFormat.Hms();
@@ -28,7 +33,7 @@ class LastUpdatedRow extends StatelessWidget {
             new Text(
               "Last update: " + formattedDate + ' ' + formattedTime,
               style: TextStyle(
-                fontSize: 13.0,
+                fontSize: 10.0,
                 color: Colors.grey,
               ),
             ),

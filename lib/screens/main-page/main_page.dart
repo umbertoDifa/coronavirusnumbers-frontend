@@ -1,6 +1,6 @@
 import 'package:corona_virus/models/state_model.dart';
 import 'package:corona_virus/screens/main-page/country_list.dart';
-import 'package:corona_virus/screens/main-page/filter_row.dart';
+import 'package:corona_virus/models/filter_config.dart';
 import 'package:corona_virus/screens/main-page/last_updated_row.dart';
 import 'package:corona_virus/screens/main-page/search.dart';
 import 'package:corona_virus/screens/main-page/top_name_row.dart';
@@ -21,8 +21,6 @@ class MainPage extends StatelessWidget {
                 builder: (context, state, child) => TopNameRow(state)),
             Consumer<StateModel>(
                 builder: (context, state, child) => TopNumbersRow(state)),
-            Consumer<StateModel>(
-                builder: (context, state, child) => FilterRow(state)),
             SearchBar(),
             Consumer<StateModel>(
                 builder: (context, state, child) => CountryList(state)),

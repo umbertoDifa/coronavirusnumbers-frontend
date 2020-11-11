@@ -33,13 +33,13 @@ ThemeData appTheme() {
     fontFamily: "Century Gothic",
     iconTheme: IconThemeData(
       color: Colors.grey,
-      size: 28.0,
+      size: 20.0,
     ),
     textTheme: TextTheme(
       headline5: TextStyle(
-          fontSize: 36.0, fontWeight: FontWeight.bold, color: Colors.white),
+          fontSize: 30.0, fontWeight: FontWeight.bold, color: Colors.white),
       headline6: TextStyle(fontSize: 13.0, color: Colors.grey),
-      headline4: TextStyle(fontSize: 17.0, color: Colors.grey),
+      headline4: TextStyle(fontSize: 15.0, color: Colors.grey),
       bodyText2: TextStyle(fontSize: 36.0, color: Colors.grey),
     ),
   );
