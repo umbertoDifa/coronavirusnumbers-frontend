@@ -20,6 +20,12 @@ The Provider pattern is used to manage the state.
 - `docker-compose up`
 - connect to `localhost:8080`
 
+Optionally there's a .devcontainer config, you can use
+- Open in new container
+- After the container is ready run `flutter upgrade` and `flutter pub get`
+- Run `flutter run -d web-server` to start the app. 
+Hot restart on save isn't working for some reason.
+
 ## CI/CD
  Github actions :heart:
 
